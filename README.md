@@ -4,7 +4,7 @@
 
 The DavScreenshotFailureContext triggers on a failed stop in a Behat scenario and creates a screenshot in the configured screenshots folder.
 
-Often in CI systems all create containers and artifacts are destroyed at the end of a CI run. 
+Often in CI systems all created containers and artifacts are destroyed at the end of a CI run. 
 
 The DavScreenshotFailureContext uploads the screenshots to a WebDAV server.
 
