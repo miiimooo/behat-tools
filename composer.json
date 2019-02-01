@@ -2,8 +2,9 @@
     "name": "miiimooo/behat-tools",
     "description": "Behat tools",
     "keywords": ["BDD", "Behat", "Symfony2", "Context", "DAV", "Screenshot"],
-    "type": "library",
+    "type": "package",
     "license": "GPL-3.0",
+    "minimum-stability": "dev",
     "authors":[
         {
             "name":"Michael Moritz",
@@ -22,6 +23,6 @@
         "sabre/dav": "^3.2"
     },
     "require-dev": {
-        "behat/mink-goutte-driver": "^1.1",
+        "behat/mink-goutte-driver": "^1.1"
     }
 }
