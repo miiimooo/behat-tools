@@ -1,0 +1,27 @@
+{
+    "name": "miiimooo/behat-tools",
+    "description": "Behat tools",
+    "keywords": ["BDD", "Behat", "Symfony2", "Context", "DAV", "Screenshot"],
+    "type": "library",
+    "license": "GPL-3.0",
+    "authors":[
+        {
+            "name":"Michael Moritz",
+            "email":"miiimooo@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "miiimooo\\BehatTools\\": "src"
+        }
+    },
+    "require": {
+        "php": ">=5.5",
+        "behat/behat": "^3.0.13",
+        "behat/mink-extension": "^2.3.1",
+        "sabre/dav": "^3.2"
+    },
+    "require-dev": {
+        "behat/mink-goutte-driver": "^1.1",
+    }
+}
