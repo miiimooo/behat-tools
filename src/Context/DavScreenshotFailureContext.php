@@ -1,6 +1,6 @@
 <?php
 
-namespace miiimooo\BehatTools;
+namespace miiimooo\BehatTools\Context;
 
 use Behat\Behat\Context\Context;
 use Behat\Behat\Hook\Scope\AfterStepScope;
