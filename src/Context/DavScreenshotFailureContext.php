@@ -78,7 +78,12 @@ class DavScreenshotFailureContext implements Context {
       $basename = 'screenshot';
     }
     $basename .= '-' . date('Ymd_Hi');
-    file_prepare_directory($this->failurePath, FILE_CREATE_DIRECTORY);
+    if (!function_exists('file_prepare_directory')) {
+      printf('*** not running inside a Drupal environment is not fully supported. Ensure the local screenhot target folder exists yourself ***');
+    }
+    else {
+      file_prepare_directory($this->failurePath, FILE_CREATE_DIRECTORY);
+    }
     $basename = $this->failurePath . '/' . $basename;
     return $basename;
   }
@@ -94,8 +99,9 @@ class DavScreenshotFailureContext implements Context {
   }
 
   public function storeDumps($path, StepScope $scope) {
+    $screenshots_folder = trim(getenv('WEBDAV_FOLDER') ?: 'screenshots', "/");
     $settings = [
-      'baseUri' => getenv('WEBDAV_HOST') . '/screenshots/',
+      'baseUri' => getenv('WEBDAV_HOST') . '/' . $screenshots_folder . '/',
       'userName' => getenv('WEBDAV_USERNAME'),
       'password' => getenv('WEBDAV_PASSWORD'),
     ];
