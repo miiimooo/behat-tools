@@ -1,5 +1,41 @@
 # behat-tools
 
+```yaml
+composer require miiimooo/behat-tools
+```
+
+## ParagraphsContext
+Support for creating paragraph content in Drupal 8 (only)
+### Enabling
+**behat.yml**
+
+```yaml
+default:
+  suites:
+    default:
+      contexts:
+        - miiimooo\BehatTools\Context\ParagraphsContext
+
+```
+
+### Usage
+In your feature first define the paragraph and name it, then use the name to reference it in a field that references paragraphs:
+
+```gherkin
+Feature: Content
+  @api
+  Scenario: Paragraph creation through Drupal 8 API
+
+    Given a "my_paragraph_type" paragraph named "my_arbitrary_name":
+      | title             | Lorem ipsum|
+
+    Given I am viewing a "page" content:
+      | title            | Dolor sed         |
+      | field_paragraphs | my_arbitrary_name |
+
+```
+
+
 ## DavScreenshotFailureContext
 
 The DavScreenshotFailureContext triggers on a failed stop in a Behat scenario and creates a screenshot in the configured screenshots folder.
