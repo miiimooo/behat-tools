@@ -1,7 +1,7 @@
 {
     "name": "miiimooo/behat-tools",
     "description": "Behat tools",
-    "keywords": ["BDD", "Behat", "Symfony2", "Context", "DAV", "Screenshot"],
+    "keywords": ["BDD", "Behat", "Drupal 8", "Context", "DAV", "Screenshot", "CI", "Drone", "CD", "JavaScript", "Selenium"],
     "type": "package",
     "license": "GPL-3.0",
     "minimum-stability": "dev",
@@ -23,6 +23,7 @@
         "sabre/dav": "^3.2"
     },
     "require-dev": {
-        "behat/mink-goutte-driver": "^1.1"
+        "behat/mink-goutte-driver": "^1.1",
+        "miiimooo/behat-tools": "dev-master"
     }
 }

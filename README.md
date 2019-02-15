@@ -72,3 +72,17 @@ The URI where the screenshot will be saved is constructed as:
 ```
 WEBDAV_HOST/WEBDAV_FOLDER/DRONE_REPO_NAME-DRONE_BUILD_NUMBER-FEATURE-LINENUMBER-TIMESTAMP.(png/html)
 ``` 
+
+## JavascriptOnErrorContext
+
+The JavascriptOnErrorContext triggers on a failed stop in a Behat scenario and prints out any Javascript errors.
+
+**behat.yml**
+
+```yaml
+default:
+  suites:
+    default:
+      contexts:
+        - miiimooo\BehatTools\Context\JavascriptOnErrorContext
+```
