@@ -86,3 +86,27 @@ default:
       contexts:
         - miiimooo\BehatTools\Context\JavascriptOnErrorContext
 ```
+
+## PerformanceTimingContext
+
+The PerformanceTimingContext reports the result from [Performance Timing API](https://developer.mozilla.org/en-US/docs/Web/API/Navigation_timing_API) after each scenario
+```shell
+    Then I should see the link "Home"
+  │
+  │  Backend: 3199 / Frontend: 500
+  │  
+  │
+  └─ @AfterScenario @javascript # PerformanceTimingContext::report()
+
+```
+ 
+
+**behat.yml**
+
+```yaml
+default:
+  suites:
+    default:
+      contexts:
+        - miiimooo\BehatTools\Context\PerformanceTimingContext
+```
