@@ -8,9 +8,10 @@ namespace miiimooo\BehatTools\Context;
 use Behat\Behat\Context\Context;
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
 use Behat\Gherkin\Node\TableNode;
+use Drupal\DrupalExtension\Context\RawDrupalContext;
 use Drupal\DrupalExtension\Hook\Scope\BeforeNodeCreateScope;
 
-class ParagraphsContext implements Context {
+class ParagraphsContext extends RawDrupalContext {
   /**
    * @var \Drupal\DrupalExtension\Context\DrupalContext
    */
@@ -19,8 +20,6 @@ class ParagraphsContext implements Context {
   protected $entities = [];
 
   const ENTITY_TYPE_ID = 'paragraph';
-
-  protected $paragraphNames = [];
 
   /**
    * @BeforeScenario @javascript
@@ -41,8 +40,10 @@ class ParagraphsContext implements Context {
    */
   public function create($entity) {
     $this->drupalContext->parseEntityFields(self::ENTITY_TYPE_ID, $entity);
+    $this->dispatchHooks('BeforeParagraphCreateScope', $entity);
     $saved = $this->drupalContext->getDriver()->createEntity(self::ENTITY_TYPE_ID, $entity);
     $this->entities[] = $saved;
+    $this->dispatchHooks('AfterParagraphCreateScope', $entity);
     return $saved;
   }
 
@@ -57,7 +58,6 @@ class ParagraphsContext implements Context {
       $this->drupalContext->getDriver()->entityDelete(self::ENTITY_TYPE_ID, $entity);
     }
     $this->entities = [];
-    $this->paragraphNames = [];
   }
 
   /**
@@ -78,8 +78,23 @@ class ParagraphsContext implements Context {
       $entity->{$field} = $value;
     }
     $saved = $this->create($entity);
-    $this->paragraphNames[$name] = $saved->id;
+    $saved->__paragraph_name = $name;
   }
+
+  protected function dispatchHooks($scopeType, \stdClass $entity) {
+    $fullScopeClass = 'miiimooo\\BehatTools\\Hook\\Scope\\' . $scopeType;
+    $scope = new $fullScopeClass($this->getDrupal()->getEnvironment(), $this, $entity);
+    $callResults = $this->dispatcher->dispatchScopeHooks($scope);
+
+    // The dispatcher suppresses exceptions, throw them here if there are any.
+    foreach ($callResults as $result) {
+      if ($result->hasException()) {
+        $exception = $result->getException();
+        throw $exception;
+      }
+    }
+  }
+
   /**
    * @BeforeNodeCreate
    */
@@ -96,7 +111,12 @@ class ParagraphsContext implements Context {
         || $fields[$field_name]->getSettings()['target_type'] !== 'paragraph') {
         continue;
       }
-      $target_id = isset($this->paragraphNames[$value]) ? $this->paragraphNames[$value] : NULL;
+      foreach ($this->entities as $entity) {
+        if ($entity->__paragraph_name === $value) {
+          $target_id = $entity->id;
+          break;
+        }
+      }
       if (!$target_id) {
         sprintf('Referenced paragraph name "%s" not found.', $value);
         return;
