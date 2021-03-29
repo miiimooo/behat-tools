@@ -21,6 +21,8 @@ class ParagraphsContext extends RawDrupalContext {
 
   const ENTITY_TYPE_ID = 'paragraph';
 
+  protected $paragraphNames = [];
+
   /**
    * @BeforeScenario @javascript
    * Wrap XMLHttpRequest
@@ -58,6 +60,7 @@ class ParagraphsContext extends RawDrupalContext {
       $this->drupalContext->getDriver()->entityDelete(self::ENTITY_TYPE_ID, $entity);
     }
     $this->entities = [];
+    $this->paragraphNames = [];
   }
 
   /**
@@ -78,6 +81,7 @@ class ParagraphsContext extends RawDrupalContext {
       $entity->{$field} = $value;
     }
     $saved = $this->create($entity);
+    $this->paragraphNames[$name] = $saved->id;
     $saved->__paragraph_name = $name;
   }
 
@@ -111,22 +115,27 @@ class ParagraphsContext extends RawDrupalContext {
         || $fields[$field_name]->getSettings()['target_type'] !== 'paragraph') {
         continue;
       }
-      foreach ($this->entities as $entity) {
-        if ($entity->__paragraph_name === $value) {
-          $target_id = $entity->id;
-          break;
+      $target_ids = [];
+      $revision_ids = [];
+      $values = (strpos($value, ',') !== FALSE)
+        ? array_map('trim', explode(',', $value))
+        : [$value];
+      foreach ($values as $value) {
+        $target_id = isset($this->paragraphNames[$value]) ? $this->paragraphNames[$value] : NULL;
+        if (!$target_id) {
+          throw new \Exception(sprintf('Referenced paragraph name "%s" not found.', $value));
         }
+        $paragraph = \Drupal\paragraphs\Entity\Paragraph::load($target_id);
+        $target_ids[] = $target_id;
+        $revision_ids[] = $paragraph->getRevisionId();
       }
-      if (!$target_id) {
-        sprintf('Referenced paragraph name "%s" not found.', $value);
-        return;
+      if (empty($target_ids) || empty($revision_ids)) {
+        continue;
       }
-      $paragraph = \Drupal\paragraphs\Entity\Paragraph::load($target_id);
       $column_name = "$field_name:target_id";
-      $node->$column_name = $target_id;
+      $node->$column_name = implode(',', $target_ids);
       $column_name = "$field_name:target_revision_id";
-      $node->$column_name = $paragraph->getRevisionId();
+      $node->$column_name = implode(',', $revision_ids);
     }
   }
 }
-
