@@ -96,17 +96,27 @@ class ParagraphsContext implements Context {
         || $fields[$field_name]->getSettings()['target_type'] !== 'paragraph') {
         continue;
       }
-      $target_id = isset($this->paragraphNames[$value]) ? $this->paragraphNames[$value] : NULL;
-      if (!$target_id) {
-        sprintf('Referenced paragraph name "%s" not found.', $value);
-        return;
+      $target_ids = [];
+      $revision_ids = [];
+      $values = (strpos($value, ',') !== FALSE)
+        ? array_map('trim', explode(',', $value))
+        : [$value];
+      foreach ($values as $value) {
+        $target_id = isset($this->paragraphNames[$value]) ? $this->paragraphNames[$value] : NULL;
+        if (!$target_id) {
+          throw new \Exception(sprintf('Referenced paragraph name "%s" not found.', $value));
+        }
+        $paragraph = \Drupal\paragraphs\Entity\Paragraph::load($target_id);
+        $target_ids[] = $target_id;
+        $revision_ids[] = $paragraph->getRevisionId();
       }
-      $paragraph = \Drupal\paragraphs\Entity\Paragraph::load($target_id);
+      if (empty($target_ids) || empty($revision_ids)) {
+        continue;
+      }
       $column_name = "$field_name:target_id";
-      $node->$column_name = $target_id;
+      $node->$column_name = implode(',', $target_ids);
       $column_name = "$field_name:target_revision_id";
-      $node->$column_name = $paragraph->getRevisionId();
+      $node->$column_name = implode(',', $revision_ids);
     }
   }
 }
-
