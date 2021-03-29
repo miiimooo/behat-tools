@@ -80,6 +80,7 @@ class ParagraphsContext extends RawDrupalContext {
     foreach ($fields->getRowsHash() as $field => $value) {
       $entity->{$field} = $value;
     }
+    $this->preprocessEntityReferenceFieldsForParagraphs('paragraph', $entity);
     $saved = $this->create($entity);
     $this->paragraphNames[$name] = $saved->id;
     $saved->__paragraph_name = $name;
@@ -104,11 +105,22 @@ class ParagraphsContext extends RawDrupalContext {
    */
   public function beforeNodeCreateHook(BeforeNodeCreateScope $scope) {
     // This is missing in the Drupal driver
+    $this->preprocessEntityReferenceFieldsForParagraphs('node', $scope->getEntity());
+  }
+
+  /**
+   * Detect entity references to paragraphs and resovle them before creating an entity
+   *
+   * @param string $entity_type_id
+   * @param \StdClass $entity
+   *
+   * @throws \Exception
+   */
+  protected function preprocessEntityReferenceFieldsForParagraphs(string $entity_type_id, \StdClass $entity) {
     /** @var \Drupal\field\Entity\FieldStorageConfig[] $fields */
     $fields = \Drupal::service('entity_field.manager')
-      ->getFieldStorageDefinitions('node');
-    $node = $scope->getEntity();
-    foreach ((array)$node as $field_name => $value) {
+      ->getFieldStorageDefinitions($entity_type_id);
+    foreach ((array)$entity as $field_name => $value) {
       if (is_array($value) || !isset($fields[$field_name])
         || !$fields[$field_name]->getSettings()
         || !isset($fields[$field_name]->getSettings()['target_type'])
@@ -133,9 +145,9 @@ class ParagraphsContext extends RawDrupalContext {
         continue;
       }
       $column_name = "$field_name:target_id";
-      $node->$column_name = implode(',', $target_ids);
+      $entity->$column_name = implode(',', $target_ids);
       $column_name = "$field_name:target_revision_id";
-      $node->$column_name = implode(',', $revision_ids);
+      $entity->$column_name = implode(',', $revision_ids);
     }
   }
 }
