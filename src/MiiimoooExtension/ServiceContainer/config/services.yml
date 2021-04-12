@@ -1,0 +1,11 @@
+parameters:
+  # Hook loader.
+  miiimooo.behattools.context.annotation.reader.class: miiimooo\BehatTools\Context\Annotation\Reader
+
+services:
+  miiomooo.behattools.context.loader.annotated:
+    class: "%miiimooo.behattools.context.annotation.reader.class%"
+    arguments:
+    tags:
+      - { name: context.annotation_reader }
+
