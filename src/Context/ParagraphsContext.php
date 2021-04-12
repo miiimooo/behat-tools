@@ -24,7 +24,7 @@ class ParagraphsContext extends RawDrupalContext {
   protected $paragraphNames = [];
 
   /**
-   * @BeforeScenario @javascript
+   * @BeforeScenario
    * Wrap XMLHttpRequest
    */
   public function prepare(BeforeScenarioScope $scope) {
