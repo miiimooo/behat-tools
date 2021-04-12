@@ -18,6 +18,12 @@ default:
 
 ```
 
+Support for `@BeforeParagraphCreate` and `@AfterParagraphCreate` in your own contexts by adding the new extension in behat.yml
+```yaml
+  extensions:
+    miiimooo\BehatTools\MiiimoooExtension: ~
+``` 
+
 ### Usage
 In your feature first define the paragraph and name it, then use the name to reference it in a field that references paragraphs:
 
