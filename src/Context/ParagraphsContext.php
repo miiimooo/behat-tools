@@ -10,6 +10,7 @@ use Behat\Behat\Hook\Scope\BeforeScenarioScope;
 use Behat\Gherkin\Node\TableNode;
 use Drupal\DrupalExtension\Context\RawDrupalContext;
 use Drupal\DrupalExtension\Hook\Scope\BeforeNodeCreateScope;
+use Drupal\DrupalExtension\Hook\Scope\BeforeUserCreateScope;
 
 class ParagraphsContext extends RawDrupalContext {
   /**
@@ -106,6 +107,14 @@ class ParagraphsContext extends RawDrupalContext {
   public function beforeNodeCreateHook(BeforeNodeCreateScope $scope) {
     // This is missing in the Drupal driver
     $this->preprocessEntityReferenceFieldsForParagraphs('node', $scope->getEntity());
+  }
+  
+    /**
+   * @BeforeUserCreate
+   */
+  public function beforeUserCreateHook(BeforeUserCreateScope $scope) {
+    // This is missing in the Drupal driver
+    $this->preprocessEntityReferenceFieldsForParagraphs('user', $scope->getEntity());
   }
 
   /**
