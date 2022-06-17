@@ -23,7 +23,6 @@
         "sabre/dav": "^3.2"
     },
     "require-dev": {
-        "behat/mink-goutte-driver": "^1.1",
-        "miiimooo/behat-tools": "dev-master"
+        "behat/mink-goutte-driver": "^1.1"
     }
 }
