@@ -20,7 +20,7 @@
         "php": ">=5.5",
         "behat/behat": "^3.0.13",
         "behat/mink-extension": "^2.3.1",
-        "sabre/dav": "^3.2"
+        "sabre/dav": "^3.2 || ^4.4.0"
     },
     "require-dev": {
         "behat/mink-goutte-driver": "^1.1"
